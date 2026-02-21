@@ -2,7 +2,7 @@
 
 A standalone, browser-based reporting tool for analyzing NWEA **MAP Reading Fluency** and **MAP Growth** assessment data. Built as a single HTML file with no server or installation required — just open it in a browser.
 
-**Video Guides:** [Overview](https://youtu.be/lG3c6WV6j84) | [Getting Started](https://www.youtube.com/watch?v=UMgL2GXVcGY)
+**Video Guides:** [Getting Started](https://youtu.be/UMgL2GXVcGY) | [Overview](https://youtu.be/ED-jufW5shM)
 
 ## Features
 
