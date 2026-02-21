@@ -1,6 +1,8 @@
-# MAP Reading Fluency Report Generator
+# MAP Growth and Reading Fluency Dashboard
 
 A standalone, browser-based reporting tool for analyzing NWEA **MAP Reading Fluency** and **MAP Growth** assessment data. Built as a single HTML file with no server or installation required — just open it in a browser.
+
+**Video Guides:** [Overview](https://youtu.be/lG3c6WV6j84) | [Getting Started](https://www.youtube.com/watch?v=UMgL2GXVcGY)
 
 ## Features
 
@@ -61,7 +63,7 @@ Built with **Chart.js 4** and extensions:
 
 ## Quick Start
 
-1. **Download** `src/MAP_Reading_Fluency_Report_Generator.html`
+1. **Download** `src/MAP_Growth_and_Reading_Fluency_Dashboard.html`
 2. **Open** it in any modern browser (Chrome, Edge, Firefox, Safari)
 3. **Import data**:
    - Click the import button or drag-and-drop your files
@@ -77,7 +79,7 @@ No server, no installation, no internet connection required after the initial pa
 ```
 MAP_Reading_Fluency_App/
 ├── src/
-│   └── MAP_Reading_Fluency_Report_Generator.html   # The entire application
+│   └── MAP_Growth_and_Reading_Fluency_Dashboard.html   # The entire application
 ├── data/
 │   └── Sample Data/                                 # Sample datasets for testing
 │       ├── Sample_MAPReadingFluency.xlsx
