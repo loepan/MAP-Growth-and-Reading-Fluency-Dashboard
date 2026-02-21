@@ -2829,53 +2829,26 @@ https://github.com/nodeca/pako/blob/main/LICENSE
                         <p style="font-size: 0.75rem; color: #6b7280; margin-bottom: 12px;">Customize how performance levels are labeled in reports. Changes apply to all Reading Fluency reports.</p>
 
                         <div class="perf-labels-group">
-                            <div class="perf-labels-group-title">Assessment Labels</div>
-                            <div class="perf-labels-grid">
-                                <div class="perf-label-row">
-                                    <span class="perf-label-dot" style="background:#e74c3c;"></span>
-                                    <span class="perf-label-default">Level 1 (lowest)</span>
-                                    <input type="text" id="perfAssessBelow" class="perf-label-input" maxlength="40" placeholder="Below Expectation">
-                                </div>
-                                <div class="perf-label-row">
-                                    <span class="perf-label-dot" style="background:#f39c12;"></span>
-                                    <span class="perf-label-default">Level 2</span>
-                                    <input type="text" id="perfAssessApproaching" class="perf-label-input" maxlength="40" placeholder="Approaching Expectation">
-                                </div>
-                                <div class="perf-label-row">
-                                    <span class="perf-label-dot" style="background:#2ecc71;"></span>
-                                    <span class="perf-label-default">Level 3</span>
-                                    <input type="text" id="perfAssessMeets" class="perf-label-input" maxlength="40" placeholder="Meets Expectation">
-                                </div>
-                                <div class="perf-label-row">
-                                    <span class="perf-label-dot" style="background:#27ae60;"></span>
-                                    <span class="perf-label-default">Level 4 (highest)</span>
-                                    <input type="text" id="perfAssessExceeds" class="perf-label-input" maxlength="40" placeholder="Exceeds Expectation">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="perf-labels-group" style="margin-top: 16px;">
-                            <div class="perf-labels-group-title">Report Card Labels</div>
                             <div class="perf-labels-grid">
                                 <div class="perf-label-row">
                                     <span class="perf-label-dot" style="background:#f87171;"></span>
                                     <span class="perf-label-default">Level 1 (lowest)</span>
-                                    <input type="text" id="perfReportEmerging" class="perf-label-input" maxlength="40" placeholder="Emerging">
+                                    <input type="text" id="perfLevel1" class="perf-label-input" maxlength="40" placeholder="Emerging">
                                 </div>
                                 <div class="perf-label-row">
                                     <span class="perf-label-dot" style="background:#fbbf24;"></span>
                                     <span class="perf-label-default">Level 2</span>
-                                    <input type="text" id="perfReportDeveloping" class="perf-label-input" maxlength="40" placeholder="Developing">
+                                    <input type="text" id="perfLevel2" class="perf-label-input" maxlength="40" placeholder="Developing">
                                 </div>
                                 <div class="perf-label-row">
                                     <span class="perf-label-dot" style="background:#60a5fa;"></span>
                                     <span class="perf-label-default">Level 3</span>
-                                    <input type="text" id="perfReportMeeting" class="perf-label-input" maxlength="40" placeholder="Meeting">
+                                    <input type="text" id="perfLevel3" class="perf-label-input" maxlength="40" placeholder="Meeting">
                                 </div>
                                 <div class="perf-label-row">
                                     <span class="perf-label-dot" style="background:#34d399;"></span>
                                     <span class="perf-label-default">Level 4 (highest)</span>
-                                    <input type="text" id="perfReportExpanding" class="perf-label-input" maxlength="40" placeholder="Expanding">
+                                    <input type="text" id="perfLevel4" class="perf-label-input" maxlength="40" placeholder="Expanding">
                                 </div>
                             </div>
                         </div>
@@ -9664,20 +9637,19 @@ function createExportScatterChart(id,datasets,title){
         };
         const RC_LEVEL_SORT = { 'Emerging': 1, 'Developing': 2, 'Meeting': 3, 'Expanding': 4, 'No Score': 0 };
 
-        // Customizable performance level display labels
+        // Customizable performance level display labels (unified)
         const DEFAULT_PERF_LABELS = {
-            assessment: {
-                'Below Expectation': 'Below Expectation',
-                'Approaching Expectation': 'Approaching Expectation',
-                'Meets Expectation': 'Meets Expectation',
-                'Exceeds Expectation': 'Exceeds Expectation'
-            },
-            report: {
-                'Emerging': 'Emerging',
-                'Developing': 'Developing',
-                'Meeting': 'Meeting',
-                'Expanding': 'Expanding'
-            }
+            'Emerging': 'Emerging',
+            'Developing': 'Developing',
+            'Meeting': 'Meeting',
+            'Expanding': 'Expanding'
+        };
+        // Maps all internal NWEA names and short forms to the canonical label keys
+        const PERF_LABEL_ALIASES = {
+            'Below Expectation': 'Emerging', 'Below': 'Emerging',
+            'Approaching Expectation': 'Developing', 'Approaching': 'Developing',
+            'Meets Expectation': 'Meeting', 'Meets': 'Meeting',
+            'Exceeds Expectation': 'Expanding', 'Exceeds': 'Expanding'
         };
         let perfLabelSettings = JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS));
 
@@ -9696,20 +9668,22 @@ function createExportScatterChart(id,datasets,title){
                 const stored = localStorage.getItem(PERF_LABELS_STORAGE_KEY);
                 if (stored) {
                     const parsed = JSON.parse(stored);
-                    perfLabelSettings = { ...JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS)), ...parsed };
-                    if (parsed.assessment) perfLabelSettings.assessment = { ...DEFAULT_PERF_LABELS.assessment, ...parsed.assessment };
-                    if (parsed.report) perfLabelSettings.report = { ...DEFAULT_PERF_LABELS.report, ...parsed.report };
+                    // Migrate from old {assessment, report} format
+                    if (parsed.report) {
+                        perfLabelSettings = { ...JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS)), ...parsed.report };
+                    } else {
+                        perfLabelSettings = { ...JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS)), ...parsed };
+                    }
                 }
             } catch (e) {
                 perfLabelSettings = JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS));
             }
         }
 
-        // Display label getter — wraps internal names with custom labels for user-facing text
+        // Display label getter — resolves any internal name to the user's custom label
         function getLabel(internalName) {
-            return perfLabelSettings.report[internalName]
-                || perfLabelSettings.assessment[internalName]
-                || internalName;
+            const key = PERF_LABEL_ALIASES[internalName] || internalName;
+            return perfLabelSettings[key] || internalName;
         }
 
         // Update all dynamically-rendered label displays on the page
@@ -10325,10 +10299,10 @@ function createExportScatterChart(id,datasets,title){
         function renderPerformanceBadge(level) {
             if (!level) return '<span style="color: #9ca3af;">-</span>';
             const colors = {
-                'Emerging': { bg: '#fecaca', text: '#b91c1c' },     // Soft coral/rose
-                'Developing': { bg: '#fde68a', text: '#92400e' },   // Soft amber
-                'Meeting': { bg: '#bfdbfe', text: '#1e40af' },      // Soft sky blue
-                'Expanding': { bg: '#a7f3d0', text: '#047857' }     // Soft mint green
+                'Emerging': { bg: '#f87171', text: '#fff' },
+                'Developing': { bg: '#fbbf24', text: '#fff' },
+                'Meeting': { bg: '#60a5fa', text: '#fff' },
+                'Expanding': { bg: '#34d399', text: '#fff' }
             };
             const c = colors[level] || { bg: '#f3f4f6', text: '#6b7280' };
             return `<span style="background: ${c.bg}; color: ${c.text}; padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: 500;">${getLabel(level)}</span>`;
@@ -15891,7 +15865,6 @@ function createExportScatterChart(id,datasets,title){
 
             // Custom labels
             const lbl = { em: getLabel('Emerging'), dev: getLabel('Developing'), mt: getLabel('Meeting'), ex: getLabel('Expanding') };
-            const lblAssess = { below: getLabel('Below Expectation'), approach: getLabel('Approaching Expectation'), meets: getLabel('Meets Expectation'), exceeds: getLabel('Exceeds Expectation') };
 
             // Level colors matching the reference
             const levelColors = { Emerging: '#c0392b', Developing: '#f39c12', Meeting: '#2980b9', Expanding: '#27ae60' };
@@ -16056,7 +16029,7 @@ tbody tr:nth-child(even):hover{background:#f0f0f0}
 .level-badge{display:inline-block;padding:3px 10px;border-radius:10px;font-weight:600;font-size:.8em;color:#fff;min-width:80px}
 .level-expanding{background-color:#34d399}
 .level-meeting{background-color:#60a5fa}
-.level-developing{background-color:#fbbf24;color:#78350f}
+.level-developing{background-color:#fbbf24;color:#fff}
 .level-emerging{background-color:#f87171}
 .level-no-score{background-color:#d1d5db;color:#4b5563}
 .metric-label{display:block;font-size:.78em;color:#666;margin-top:3px}
@@ -16094,11 +16067,7 @@ tbody tr:nth-child(even):hover{background:#f0f0f0}
 <div class="info-box">
     <strong>About This Report:</strong> Each student&#39;s results are broken
     out by component for Foundational Skills and Oral Reading benchmarks.
-    Performance levels are mapped as:<br>
-    <strong>${lbl.em}</strong> = ${lblAssess.below} &nbsp;|&nbsp;
-    <strong>${lbl.dev}</strong> = ${lblAssess.approach} &nbsp;|&nbsp;
-    <strong>${lbl.mt}</strong> = ${lblAssess.meets} &nbsp;|&nbsp;
-    <strong>${lbl.ex}</strong> = ${lblAssess.exceeds}<br>
+    Performance levels: <strong>${lbl.em}</strong>, <strong>${lbl.dev}</strong>, <strong>${lbl.mt}</strong>, <strong>${lbl.ex}</strong>.<br>
     <em>Click any column header to sort the table.</em>
 </div>
 
@@ -16593,25 +16562,21 @@ ${getLicenseFooterHTML(brandColor)}
             // --- Performance Level Labels events ---
             loadPerfLabels();
 
-            // Input field mapping: element ID → settings path
+            // Input field mapping: element ID → label key
             const perfLabelInputs = {
-                'perfAssessBelow': { group: 'assessment', key: 'Below Expectation' },
-                'perfAssessApproaching': { group: 'assessment', key: 'Approaching Expectation' },
-                'perfAssessMeets': { group: 'assessment', key: 'Meets Expectation' },
-                'perfAssessExceeds': { group: 'assessment', key: 'Exceeds Expectation' },
-                'perfReportEmerging': { group: 'report', key: 'Emerging' },
-                'perfReportDeveloping': { group: 'report', key: 'Developing' },
-                'perfReportMeeting': { group: 'report', key: 'Meeting' },
-                'perfReportExpanding': { group: 'report', key: 'Expanding' }
+                'perfLevel1': 'Emerging',
+                'perfLevel2': 'Developing',
+                'perfLevel3': 'Meeting',
+                'perfLevel4': 'Expanding'
             };
 
             // Populate inputs from loaded settings and attach change listeners
-            for (const [id, mapping] of Object.entries(perfLabelInputs)) {
+            for (const [id, key] of Object.entries(perfLabelInputs)) {
                 const el = document.getElementById(id);
                 if (el) {
-                    el.value = perfLabelSettings[mapping.group][mapping.key] || '';
+                    el.value = perfLabelSettings[key] || '';
                     el.addEventListener('input', () => {
-                        perfLabelSettings[mapping.group][mapping.key] = el.value.trim() || mapping.key;
+                        perfLabelSettings[key] = el.value.trim() || key;
                         savePerfLabels();
                         updatePerfLabelDisplays();
                     });
@@ -16622,9 +16587,9 @@ ${getLicenseFooterHTML(brandColor)}
             if (resetPerfLabelsBtn) resetPerfLabelsBtn.addEventListener('click', () => {
                 perfLabelSettings = JSON.parse(JSON.stringify(DEFAULT_PERF_LABELS));
                 savePerfLabels();
-                for (const [id, mapping] of Object.entries(perfLabelInputs)) {
+                for (const [id, key] of Object.entries(perfLabelInputs)) {
                     const el = document.getElementById(id);
-                    if (el) el.value = perfLabelSettings[mapping.group][mapping.key];
+                    if (el) el.value = perfLabelSettings[key];
                 }
                 updatePerfLabelDisplays();
             });
@@ -17385,7 +17350,7 @@ ${getLicenseFooterHTML(brandColor)}
                         <strong>Report Overview:</strong><br>
                         This report provides grade-level aggregate statistics without individual student identifiers. Data includes homeroom comparisons, performance distributions, and progress trends.<br>
                         <strong>Terms Included:</strong> ${terms.join(', ')}<br>
-                        <strong>Note:</strong> Performance levels (${getLabel('Below Expectation')}, ${getLabel('Approaching Expectation')}, ${getLabel('Meets Expectation')}, ${getLabel('Exceeds Expectation')}) are from MAP Reading Fluency assessment results.
+                        <strong>Note:</strong> Performance levels (${getLabel('Emerging')}, ${getLabel('Developing')}, ${getLabel('Meeting')}, ${getLabel('Expanding')}) are from MAP Reading Fluency assessment results.
                     </div>
 
                     <h2>📈 Grade-Level Statistics</h2>
@@ -18574,7 +18539,7 @@ ${getLicenseFooterHTML(brandColor)}
                     .level-badge { display: inline-block; padding: 5px 14px; border-radius: 12px; font-weight: 600; font-size: 0.8em; color: white; min-width: 80px; margin-top: 4px; margin-bottom: 12px; }
                     .level-expanding { background-color: #34d399; }
                     .level-meeting { background-color: #60a5fa; }
-                    .level-developing { background-color: #fbbf24; color: #78350f; }
+                    .level-developing { background-color: #fbbf24; color: #fff; }
                     .level-emerging { background-color: #f87171; }
                     .level-no-score { background-color: #d1d5db; color: #4b5563; }
                     .metric-label { display: block; font-size: 0.82em; color: #555; margin-top: 10px; margin-bottom: 10px; }
@@ -18595,11 +18560,7 @@ ${getLicenseFooterHTML(brandColor)}
 
                     <div class="rc-info-box">
                         <strong>About This Report:</strong> Each student's results are broken out by component for Foundational Skills and Oral Reading benchmarks.
-                        Performance levels are mapped as:<br>
-                        <strong>${getLabel('Emerging')}</strong> = ${getLabel('Below Expectation')} &nbsp;|&nbsp;
-                        <strong>${getLabel('Developing')}</strong> = ${getLabel('Approaching Expectation')} &nbsp;|&nbsp;
-                        <strong>${getLabel('Meeting')}</strong> = ${getLabel('Meets Expectation')} &nbsp;|&nbsp;
-                        <strong>${getLabel('Expanding')}</strong> = ${getLabel('Exceeds Expectation')}<br>
+                        Performance levels: <strong>${getLabel('Emerging')}</strong>, <strong>${getLabel('Developing')}</strong>, <strong>${getLabel('Meeting')}</strong>, <strong>${getLabel('Expanding')}</strong>.<br>
                         <em>Click any column header to sort the table. Use the term tabs to switch between benchmark periods.</em>
                     </div>
 
@@ -18879,7 +18840,7 @@ ${getLicenseFooterHTML(brandColor)}
                     .level-badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-weight: 600; font-size: 0.8em; color: white; }
                     .level-expanding, .level-exceeds { background-color: #34d399; }
                     .level-meeting, .level-meets { background-color: #60a5fa; }
-                    .level-developing, .level-approaching { background-color: #fbbf24; color: #78350f; }
+                    .level-developing, .level-approaching { background-color: #fbbf24; color: #fff; }
                     .level-emerging, .level-below { background-color: #f87171; }
                     .number-cell { text-align: center; }
                     .no-data { color: #7f8c8d; font-style: italic; padding: 20px; text-align: center; }
@@ -19101,7 +19062,7 @@ ${getLicenseFooterHTML(brandColor)}
                                     wcpmAnnotations.approachingLine = {
                                         type: 'line', yMin: wcpmBenchmark.approaching, yMax: wcpmBenchmark.approaching,
                                         borderColor: '#fbbf24', borderDash: [6, 3], borderWidth: 2,
-                                        label: { content: getLabel('Approaching'), display: true, position: 'end', backgroundColor: '#fbbf24', color: '#78350f', font: { size: 10 } }
+                                        label: { content: getLabel('Approaching'), display: true, position: 'end', backgroundColor: '#fbbf24', color: 'white', font: { size: 10 } }
                                     };
                                 }
                             }
@@ -19188,7 +19149,7 @@ ${getLicenseFooterHTML(brandColor)}
                                                 annotations: {
                                                     exceedsLine: { type: 'line', yMin: 98, yMax: 98, borderColor: '#34d399', borderDash: [6, 3], borderWidth: 2, label: { content: getLabel('Exceeds') + ' (98%)', display: true, position: 'end', backgroundColor: '#34d399', font: { size: 9 } } },
                                                     meetsLine: { type: 'line', yMin: 95, yMax: 95, borderColor: '#60a5fa', borderDash: [6, 3], borderWidth: 2, label: { content: getLabel('Meets') + ' (95%)', display: true, position: 'end', backgroundColor: '#60a5fa', font: { size: 9 } } },
-                                                    approachingLine: { type: 'line', yMin: 90, yMax: 90, borderColor: '#fbbf24', borderDash: [6, 3], borderWidth: 2, label: { content: getLabel('Approaching') + ' (90%)', display: true, position: 'end', backgroundColor: '#fbbf24', color: '#78350f', font: { size: 9 } } }
+                                                    approachingLine: { type: 'line', yMin: 90, yMax: 90, borderColor: '#fbbf24', borderDash: [6, 3], borderWidth: 2, label: { content: getLabel('Approaching') + ' (90%)', display: true, position: 'end', backgroundColor: '#fbbf24', color: 'white', font: { size: 9 } } }
                                                 }
                                             }
                                         },

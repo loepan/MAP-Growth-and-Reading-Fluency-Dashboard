@@ -20,6 +20,8 @@ All notable changes to the MAP Growth and Reading Fluency Dashboard are document
 - Exported MG reports now fill full browser width (removed `max-width: 1400px` constraint) — matches on-screen report layout
 - MG Homeroom export styling unified with Grade Level export: matching header, course card layout, table padding, chart grid gap (20px), footer bar, reset CSS, responsive breakpoint, and print media query
 - Export boxplot charts no longer show individual data point scatter behind the box plots (`itemRadius` set to 0)
+- **Performance Level Labels** unified — merged "Assessment Labels" and "Report Card Labels" into a single group of 4 customizable levels; all internal NWEA names (e.g., Below Expectation, Approaching) now resolve to the same custom label via alias mapping
+- Developing/Approaching performance badges and chart annotation labels now use white text instead of brown — consistent with all other performance levels across on-screen reports, exports, and student reports
 
 ## [1.5.0] - 2026-02-17
 
