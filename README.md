@@ -65,7 +65,7 @@ Built with **Chart.js 4** and extensions:
 
 | MAP Growth Dashboard | MAP Reading Fluency Benchmarks | Interventions |
 |:---:|:---:|:---:|
-| ![MAP Growth](assets/Screenshots/MAP_Growth_Sample.png) | ![Reading Fluency](assets/Screenshots/MAP_Reading_Fluency_Benchmarks_Sample.png) | ![Interventions](assets/Screenshots/Interventions_Sample.png) |
+| ![MAP Growth](Screenshots/MAP_Growth_Sample.png) | ![Reading Fluency](Screenshots/MAP_Reading_Fluency_Benchmarks_Sample.png) | ![Interventions](Screenshots/Interventions_Sample.png) |
 
 ## Quick Start
 
