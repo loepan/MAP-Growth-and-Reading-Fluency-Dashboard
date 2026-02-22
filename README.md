@@ -83,22 +83,19 @@ No server, no installation, no internet connection required after the initial pa
 ## File Structure
 
 ```
-MAP_Reading_Fluency_App/
-├── src/
-│   └── MAP_Growth_and_Reading_Fluency_Dashboard.html   # The entire application
-├── data/
-│   └── Sample Data/                                 # Sample datasets for testing
-│       ├── Sample_MAPReadingFluency.xlsx
-│       ├── Sample_MAP_Growth_Fall_2025.csv
-│       ├── Sample_MAP_Growth_Winter_2025.csv
-│       └── Sample_MAP_Growth_Spring_2026.csv
-├── assets/
-│   ├── BWYA.png                                     # School logo
-│   └── Screenshots/                                 # README screenshots
-│       ├── MAP_Growth_Sample.png
-│       ├── MAP_Reading_Fluency_Benchmarks_Sample.png
-│       └── Interventions_Sample.png
-└── README.md
+MAP-Growth-and-Reading-Fluency-Dashboard/
+├── MAP_Growth_and_Reading_Fluency_Dashboard.html    # The entire application
+├── README.md
+├── CHANGELOG.md
+├── Sample Data/                                     # Sample datasets for testing
+│   ├── Sample_MAPReadingFluency.xlsx
+│   ├── Sample_MAP_Growth_Fall_2025.csv
+│   ├── Sample_MAP_Growth_Winter_2025.csv
+│   └── Sample_MAP_Growth_Spring_2026.csv
+└── Screenshots/                                     # README screenshots
+    ├── MAP_Growth_Sample.png
+    ├── MAP_Reading_Fluency_Benchmarks_Sample.png
+    └── Interventions_Sample.png
 ```
 
 ## Technology
