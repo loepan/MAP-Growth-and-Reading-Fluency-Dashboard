@@ -61,6 +61,12 @@ Built with **Chart.js 4** and extensions:
 - Gauge/percentile charts (student-level national percentile)
 - Distribution charts (Lexile, Phonemic Awareness, Phonics)
 
+## Screenshots
+
+| MAP Growth Dashboard | MAP Reading Fluency Benchmarks | Interventions |
+|:---:|:---:|:---:|
+| ![MAP Growth](assets/Screenshots/MAP_Growth_Sample.png) | ![Reading Fluency](assets/Screenshots/MAP_Reading_Fluency_Benchmarks_Sample.png) | ![Interventions](assets/Screenshots/Interventions_Sample.png) |
+
 ## Quick Start
 
 1. **Download** `src/MAP_Growth_and_Reading_Fluency_Dashboard.html`
@@ -87,7 +93,11 @@ MAP_Reading_Fluency_App/
 │       ├── Sample_MAP_Growth_Winter_2025.csv
 │       └── Sample_MAP_Growth_Spring_2026.csv
 ├── assets/
-│   └── BWYA.png                                     # School logo
+│   ├── BWYA.png                                     # School logo
+│   └── Screenshots/                                 # README screenshots
+│       ├── MAP_Growth_Sample.png
+│       ├── MAP_Reading_Fluency_Benchmarks_Sample.png
+│       └── Interventions_Sample.png
 └── README.md
 ```
 
